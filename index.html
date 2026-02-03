@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entretien - Église Adventiste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Variables CSS */
+    :root {
+      --adventist-blue: #0055A4;
+      --adventist-blue-dark: #003B7B;
+      --adventist-gold: #D4AF37;
+      --adventist-white: #FFFFFF;
+      --bg-dark: rgba(26, 26, 26, 0.95);
+      --bg-light: rgba(255, 255, 255, 0.05);
+      --bg-lighter: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(212, 175, 55, 0.2);
+      --shadow-medium: 0 15px 30px rgba(0, 0, 0, 0.3);
+      --transition-smooth: all 0.3s ease;
+    }
+
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      color: var(--adventist-white);
+      overflow-x: hidden;
+    }
+
+    /* Background */
+    .background-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .golden-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    .blue-radial {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0, 85, 164, 0.3) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+    }
+
+    /* Bouton de retour */
+    .back-button {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      background: rgba(0, 85, 164, 0.9);
+      border: 1px solid var(--adventist-gold);
+      border-radius: 50px;
+      padding: 0.8rem 1.5rem;
+      color: var(--adventist-white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .back-button:hover {
+      background: var(--adventist-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 85, 164, 0.3);
+    }
+
+    .back-icon {
+      font-size: 1rem;
+    }
+
+    /* Container principal */
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: var(--shadow-medium);
+      backdrop-filter: blur(20px);
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    /* Header */
+    .header-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .logo-container {
+      margin-bottom: 2rem;
+    }
+
+    .department-icon-large {
+      font-size: 4rem;
+      background: linear-gradient(135deg, var(--adventist-gold), #f4d03f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .main-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--adventist-gold), #f4d03f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .department-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .title-divider {
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .divider-star {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--adventist-gold), transparent);
+    }
+
+    /* Contenu principal */
+    .content-section {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .coming-soon-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .coming-soon-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--adventist-gold);
+      margin-bottom: 1rem;
+    }
+
+    .coming-soon-message {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .features-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .feature-item {
+      background: var(--bg-lighter);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--adventist-gold);
+    }
+
+    .feature-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--adventist-white);
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-desc {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Actions */
+    .action-section {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: var(--adventist-blue);
+      color: var(--adventist-white);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--adventist-gold), #f4d03f);
+      color: var(--adventist-blue-dark);
+    }
+
+    .action-btn.primary:hover {
+      background: linear-gradient(135deg, #f4d03f, var(--adventist-gold));
+    }
+
+    .action-btn.secondary {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+    }
+
+    .action-btn.secondary:hover {
+      background: var(--bg-lighter);
+    }
+
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Footer */
+    .footer-section {
+      margin-top: 3rem;
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer-text {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+
+    .footer-verses {
+      font-size: 0.9rem;
+      color: var(--adventist-gold);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-card {
+        padding: 2rem 1rem;
+        margin-top: 1rem;
+      }
+      
+      .main-title {
+        font-size: 1.8rem;
+      }
+      
+      .department-icon-large {
+        font-size: 3rem;
+      }
+      
+      .features-preview {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-section {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .back-button {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 1rem 0.5rem;
+      }
+      
+      .main-card {
+        border-radius: 16px;
+        padding: 1.5rem 1rem;
+      }
+      
+      .content-section {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-wrapper">
+    <div class="golden-grid"></div>
+    <div class="blue-radial"></div>
+  </div>
+
+  <!-- Bouton de retour -->
+  <a href="../../index.html" class="back-button">
+    <span class="back-icon">←</span>
+    Retour aux Départements
+  </a>
+
+  <div class="app-container">
+    <div class="main-card">
+      <!-- En-tête avec icône -->
+      <div class="header-section">
+        <div class="logo-container">
+          <div class="department-icon-large">🔧</div>
+        </div>
+        
+        <div class="title-group">
+          <h1 class="main-title">Entretien</h1>
+          <p class="department-subtitle">Maintenance et logistique de l'église</p>
+          <div class="title-divider">
+            <div class="divider-star"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="content-section">
+        <div class="coming-soon-icon">🚧</div>
+        <h2 class="coming-soon-title">Département en Développement</h2>
+        <p class="coming-soon-message">
+          Le département Entretien est actuellement en cours de développement. 
+          Nous travaillons pour vous offrir des outils complets 
+          adaptés aux besoins spécifiques de ce ministère.
+        </p>
+
+        <!-- Aperçu des fonctionnalités prévues -->
+        <div class="features-preview">
+          
+          <div class="feature-item">
+            <div class="feature-icon">🏗️</div>
+            <div class="feature-title">Maintenance</div>
+            <div class="feature-desc">Réparations courantes</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🧹</div>
+            <div class="feature-title">Nettoyage</div>
+            <div class="feature-desc">Propreté des locaux</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🌿</div>
+            <div class="feature-title">Espaces Verts</div>
+            <div class="feature-desc">Entretien jardins</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔌</div>
+            <div class="feature-title">Électricité</div>
+            <div class="feature-desc">Installation électrique</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🚰</div>
+            <div class="feature-title">Plomberie</div>
+            <div class="feature-desc">Système hydraulique</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">📦</div>
+            <div class="feature-title">Logistique</div>
+            <div class="feature-desc">Gestion matériel</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-section">
+          <button class="action-btn secondary" onclick="showNotification()">
+            <span class="btn-icon">📧</span>
+            Me notifier quand c'est prêt
+          </button>
+          
+          <a href="../../index.html" class="action-btn primary">
+            <span class="btn-icon">🏠</span>
+            Retour à l'Accueil
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-section">
+      <div class="footer-content">
+        <p class="footer-text">« Que tout se fasse pour l'édification »</p>
+        <div class="footer-verses">
+          <span class="verse">1 Corinthiens 14:26</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showNotification() {
+      alert('Merci pour votre intérêt ! Nous vous tiendrons informé des développements du département Entretien.');
+    }
+
+    // Animation d'entrée
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.querySelector('.main-card');
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 100);
+    });
+  </script>
+</body>
+</html>
