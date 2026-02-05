@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Un petit cadeau pour toi 💝</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       background: radial-gradient(circle at top, #ffe6eb, #ffb6c1);
@@ -21,16 +22,64 @@
       animation: blink 1.5s infinite;
     }
 
-    /* Petites étoiles de l'explosion */
-    .spark {
-      position: absolute;
-      font-size: 24px;
-      animation: explode 1s linear forwards;
+    /* Tremblement/vibration de l'écran */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0) translateY(0) rotate(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px) translateY(-5px) rotate(-1deg); }
+      20%, 40%, 60%, 80% { transform: translateX(10px) translateY(5px) rotate(1deg); }
     }
 
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    /* Effet d'explosion */
     @keyframes explode {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
+      0% { 
+        transform: translate(0, 0) scale(1); 
+        opacity: 1; 
+      }
+      100% { 
+        transform: translate(var(--x), var(--y)) scale(0); 
+        opacity: 0; 
+      }
+    }
+
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      animation: explode 1s ease-out forwards;
+    }
+
+    /* Flash d'explosion */
+    @keyframes flash {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .flash {
+      animation: flash 0.3s ease-in-out;
+    }
+
+    /* Effet de vague pour le boum */
+    @keyframes boomWave {
+      0% { 
+        transform: scale(0.1); 
+        opacity: 1; 
+        border-width: 20px;
+      }
+      100% { 
+        transform: scale(4); 
+        opacity: 0; 
+        border-width: 1px;
+      }
+    }
+
+    .boom-wave {
+      position: absolute;
+      border-radius: 50%;
+      border: 20px solid rgba(255, 255, 255, 0.8);
+      animation: boomWave 1s ease-out forwards;
     }
   </style>
 </head>
@@ -49,8 +98,11 @@
   <!-- Cadeau -->
   <div id="gift" class="blink text-7xl mt-16 cursor-pointer select-none">🎁</div>
 
+  <!-- Overlay de flash blanc pour l'explosion -->
+  <div id="flashOverlay" class="hidden absolute inset-0 bg-white z-20"></div>
+
   <!-- Message final caché -->
-  <div id="finalMessage" class="hidden opacity-0 absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000">
+  <div id="finalMessage" class="hidden opacity-0 absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 z-30">
     <h2 class="text-5xl md:text-6xl font-extrabold text-pink-800 mb-4 animate-pulse">Je t’aime ❤️</h2>
     <p class="text-lg md:text-xl text-pink-900 max-w-md leading-relaxed">
       Tu es mon plus beau cadeau, ma douceur, mon évidence.  
@@ -62,32 +114,106 @@
     const gift = document.getElementById("gift");
     const message1 = document.getElementById("message1");
     const finalMessage = document.getElementById("finalMessage");
+    const flashOverlay = document.getElementById("flashOverlay");
+    const body = document.body;
 
     gift.addEventListener("click", () => {
-      // Explosion d'étoiles ✨
-      for (let i = 0; i < 30; i++) {
-        const spark = document.createElement("div");
-        spark.classList.add("spark");
-        spark.textContent = "✨";
-        spark.style.left = gift.offsetLeft + 50 + "px";
-        spark.style.top = gift.offsetTop + "px";
-        spark.style.setProperty("--x", `${(Math.random() - 0.5) * 400}px`);
-        spark.style.setProperty("--y", `${(Math.random() - 0.5) * 400}px`);
-        document.body.appendChild(spark);
-        setTimeout(() => spark.remove(), 1000);
+      // Effet sonore (vibration) simulé par l'animation shake
+      body.classList.add("shake");
+      
+      // Création de l'effet "boum" avec des ondes circulaires
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const wave = document.createElement("div");
+          wave.classList.add("boom-wave");
+          wave.style.left = gift.offsetLeft + 20 + "px";
+          wave.style.top = gift.offsetTop + 20 + "px";
+          wave.style.width = "100px";
+          wave.style.height = "100px";
+          document.body.appendChild(wave);
+          setTimeout(() => wave.remove(), 1000);
+        }, i * 200);
       }
-
-      // Disparition du cadeau
-      gift.classList.add("opacity-0", "scale-0", "transition", "duration-500");
-      setTimeout(() => gift.remove(), 600);
-
-      // Transition vers message final
-      message1.classList.add("opacity-0");
+      
+      // Flash blanc
+      flashOverlay.classList.remove("hidden");
+      flashOverlay.classList.add("flash");
+      setTimeout(() => {
+        flashOverlay.classList.remove("flash");
+        flashOverlay.classList.add("hidden");
+      }, 300);
+      
+      // Création des confettis et cœurs explosifs
+      createParticles(50, ["❤️", "💖", "💕", "💗", "💓", "💞", "✨", "🌟", "🎉", "🎊"]);
+      
+      // Suppression du cadeau
+      setTimeout(() => {
+        gift.classList.add("opacity-0", "scale-0", "transition", "duration-300");
+      }, 500);
+      
+      setTimeout(() => {
+        gift.remove();
+        body.classList.remove("shake");
+      }, 800);
+      
+      // Transition vers le message final
+      setTimeout(() => {
+        message1.classList.add("opacity-0");
+      }, 1000);
+      
       setTimeout(() => {
         message1.classList.add("hidden");
         finalMessage.classList.remove("hidden");
         setTimeout(() => finalMessage.classList.add("opacity-100"), 100);
-      }, 800);
+        
+        // Ajout de quelques particules finales
+        setTimeout(() => createParticles(20, ["❤️", "💖", "✨"]), 300);
+      }, 1500);
+    });
+
+    // Fonction pour créer des particules/confettis
+    function createParticles(count, emojis) {
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+        particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        particle.style.fontSize = Math.random() * 20 + 15 + "px";
+        particle.style.left = gift.offsetLeft + 50 + "px";
+        particle.style.top = gift.offsetTop + 50 + "px";
+        particle.style.zIndex = "15";
+        
+        // Position finale aléatoire
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 100 + Math.random() * 200;
+        const x = Math.cos(angle) * velocity;
+        const y = Math.sin(angle) * velocity;
+        
+        particle.style.setProperty("--x", `${x}px`);
+        particle.style.setProperty("--y", `${y}px`);
+        
+        // Couleur aléatoire pour certains éléments
+        if (Math.random() > 0.5) {
+          const colors = ["#ff4081", "#ff79b0", "#ffb6c1", "#ff6b6b", "#ff9ff3"];
+          particle.style.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Rotation aléatoire
+        particle.style.transform += ` rotate(${Math.random() * 360}deg)`;
+        
+        // Délai d'animation aléatoire
+        particle.style.animationDelay = Math.random() * 0.5 + "s";
+        
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+      }
+    }
+
+    // Effet de secousse supplémentaire au chargement pour donner un avant-goût
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        gift.classList.add('scale-110');
+        setTimeout(() => gift.classList.remove('scale-110'), 200);
+      }, 1000);
     });
   </script>
 
