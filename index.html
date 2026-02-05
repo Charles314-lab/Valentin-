@@ -3,89 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pour toi, mon amour 💖</title>
+  <title>Un petit cadeau pour toi 💝</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
+      background: radial-gradient(circle at top, #ffe6eb, #ffb6c1);
       overflow: hidden;
-      background: radial-gradient(circle at center, #ffeff7 0%, #ffb6c1 100%);
     }
 
-    /* Animation du fond */
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.9; }
-      50% { transform: scale(1.1); opacity: 1; }
+    /* Animation du cadeau clignotant */
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.1); }
     }
 
-    /* Cœurs flottants */
-    .heart {
-      position: fixed;
-      top: 100%;
+    .blink {
+      animation: blink 1.5s infinite;
+    }
+
+    /* Petites étoiles de l'explosion */
+    .spark {
+      position: absolute;
       font-size: 24px;
-      color: #ff3366;
-      animation: float 6s linear infinite;
+      animation: explode 1s linear forwards;
     }
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+
+    @keyframes explode {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0; }
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen text-center relative">
 
-  <!-- Intro -->
-  <div id="intro" class="z-10 flex flex-col items-center transition-opacity duration-700">
-    <h1 class="text-5xl md:text-6xl font-extrabold text-pink-700 drop-shadow-lg animate-pulse">
-      Coucou mon amour 💞
-    </h1>
-    <p class="mt-4 text-lg text-pink-900">
-      J’ai une petite surprise pour toi 💌
+<body class="flex flex-col items-center justify-center min-h-screen text-center relative overflow-hidden">
+
+  <!-- Premier message -->
+  <div id="message1" class="z-10 transition-opacity duration-700">
+    <h1 class="text-4xl md:text-5xl text-pink-700 font-extrabold mb-4">Pour toi, mon amour 💌</h1>
+    <p class="text-lg text-pink-900 max-w-lg mx-auto">
+      Dans ce petit cadeau se cache un morceau de mon cœur.  
+      Clique dessus quand tu te sentiras prête à l’ouvrir... 💖
     </p>
-    <button id="startBtn" class="mt-8 px-8 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-full shadow-lg transition transform hover:scale-105">
-      Clique ici pour voir 💖
-    </button>
   </div>
 
-  <!-- Message final -->
-  <div id="message" class="hidden opacity-0 z-10 flex flex-col items-center justify-center transition-opacity duration-1000">
-    <h2 class="text-4xl md:text-5xl text-pink-800 font-semibold mb-6">Je t’aime plus que tout 💘</h2>
+  <!-- Cadeau -->
+  <div id="gift" class="blink text-7xl mt-16 cursor-pointer select-none">🎁</div>
+
+  <!-- Message final caché -->
+  <div id="finalMessage" class="hidden opacity-0 absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000">
+    <h2 class="text-5xl md:text-6xl font-extrabold text-pink-800 mb-4 animate-pulse">Je t’aime ❤️</h2>
     <p class="text-lg md:text-xl text-pink-900 max-w-md leading-relaxed">
-      Tu remplis ma vie de douceur, de lumière et de bonheur.  
-      Merci d’être là, simplement toi.  
-      Joyeuse Saint-Valentin ❤️
+      Tu es mon plus beau cadeau, ma douceur, mon évidence.  
+      Joyeuse Saint-Valentin 💞
     </p>
-    <div class="text-6xl mt-8 animate-bounce">💞</div>
   </div>
 
-  <!-- Script principal -->
   <script>
-    const intro = document.getElementById("intro");
-    const message = document.getElementById("message");
-    const startBtn = document.getElementById("startBtn");
+    const gift = document.getElementById("gift");
+    const message1 = document.getElementById("message1");
+    const finalMessage = document.getElementById("finalMessage");
 
-    // Animation d'apparition du message
-    startBtn.addEventListener("click", () => {
-      intro.classList.add("opacity-0");
+    gift.addEventListener("click", () => {
+      // Explosion d'étoiles ✨
+      for (let i = 0; i < 30; i++) {
+        const spark = document.createElement("div");
+        spark.classList.add("spark");
+        spark.textContent = "✨";
+        spark.style.left = gift.offsetLeft + 50 + "px";
+        spark.style.top = gift.offsetTop + "px";
+        spark.style.setProperty("--x", `${(Math.random() - 0.5) * 400}px`);
+        spark.style.setProperty("--y", `${(Math.random() - 0.5) * 400}px`);
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 1000);
+      }
+
+      // Disparition du cadeau
+      gift.classList.add("opacity-0", "scale-0", "transition", "duration-500");
+      setTimeout(() => gift.remove(), 600);
+
+      // Transition vers message final
+      message1.classList.add("opacity-0");
       setTimeout(() => {
-        intro.classList.add("hidden");
-        message.classList.remove("hidden");
-        setTimeout(() => message.classList.add("opacity-100"), 100);
-      }, 600);
+        message1.classList.add("hidden");
+        finalMessage.classList.remove("hidden");
+        setTimeout(() => finalMessage.classList.add("opacity-100"), 100);
+      }, 800);
     });
-
-    // Génération de cœurs flottants aléatoires
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.textContent = "💗";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = (4 + Math.random() * 3) + "s";
-      document.body.appendChild(heart);
-
-      setTimeout(() => heart.remove(), 6000);
-    }
-
-    setInterval(createHeart, 300);
   </script>
 
 </body>
